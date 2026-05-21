@@ -1,0 +1,88 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.pyc
+*.pyo
+*.pyd
+.Python
+venv/
+env/
+.venv/
+*.egg-info/
+dist/
+build/
+.eggs/
+
+# FastAPI / Backend
+backend/.env
+backend/.env.local
+backend/uploads/
+backend/logs/
+backend/.deepface/
+
+# Node / Frontend
+node_modules/
+frontend/node_modules/
+frontend/dist/
+frontend/.env.local
+frontend/.env
+
+# Environment files (never commit secrets)
+.env
+.env.local
+.env.production
+.env.staging
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Docker volumes
+postgres_data/
+redis_data/
+
+# Logs
+*.log
+logs/
+
+# Test artifacts
+.coverage
+htmlcov/
+.pytest_cache/
+coverage.xml
+
+# Build artifacts
+*.egg
+*.whl
+
+# Temporary files
+*.tmp
+*.bak
+temp/
+tmp/
+
+# Documentation build
+docs/_build/
+
+# Jupyter notebooks
+*.ipynb_checkpoints/
+
+# Parse scripts (one-off utility, not part of final project)
+parse_docs.py
+prd.md
+techstack.md
+workflow.md
+
+# Database files
+*.db
+*.sqlite
+*.db-journal
+*.sqlite3
