@@ -28,6 +28,11 @@ else:
     engine_args["pool_pre_ping"] = True
     engine_args["pool_size"] = 10
     engine_args["max_overflow"] = 20
+    import uuid
+    engine_args["connect_args"] = {
+        "statement_cache_size": 0,
+        "prepared_statement_name_func": lambda: f"__asyncpg_{uuid.uuid4().hex}__"
+    }
 
 engine = create_async_engine(
     settings.DATABASE_URL,
