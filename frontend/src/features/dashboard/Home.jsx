@@ -134,6 +134,218 @@ export const Home = () => {
         </div>
       </section>
 
+      {/* Visual Toolkit Section: What is the use of what? */}
+      <section className="relative py-24 px-4 bg-zinc-950/40 border-t border-zinc-900">
+        <div className="max-w-6xl mx-auto">
+          {/* Section Header */}
+          <div className="text-center mb-16">
+            <h2 className="text-3xl md:text-5xl font-black tracking-tight mb-4 text-white">
+              The Confidence-Building Toolkit
+            </h2>
+            <p className="text-zinc-400 max-w-xl mx-auto text-sm md:text-base">
+              Wondering where to start? Here is an overview of the core tools available on the website and what they are used for.
+            </p>
+            <div className="h-1.5 w-24 bg-gradient-to-r from-primary to-purple-500 rounded-full mx-auto mt-4" />
+          </div>
+
+          {/* Features Grid */}
+          <div className="grid md:grid-cols-2 gap-8">
+            
+            {/* Tool 1: Live Camera Dashboard */}
+            <div className="bg-zinc-900/10 border border-zinc-800/80 rounded-2xl p-6 backdrop-blur-md hover:border-primary/20 transition-all duration-300 flex flex-col justify-between group">
+              <div>
+                <div className="flex items-center gap-3 mb-4">
+                  <div className="h-10 w-10 rounded-lg bg-primary/10 border border-primary/20 flex items-center justify-center text-primary group-hover:scale-110 transition-transform duration-300">
+                    <Video className="h-5 w-5" />
+                  </div>
+                  <h3 className="text-xl font-bold text-white font-display">1. Live Expression Dashboard</h3>
+                </div>
+                <p className="text-sm text-zinc-400 mb-6 leading-relaxed">
+                  <strong>Use Case:</strong> Real-time emotional self-awareness. Use this to see how your facial muscles express emotions. It helps you recognize if you look angry, sad, fearful, or neutral when communicating.
+                </p>
+                
+                {/* Mini Visual Mockup of Camera & Face Tracking */}
+                <div className="bg-zinc-950/60 border border-zinc-800/60 rounded-xl p-4 mb-6 relative overflow-hidden h-40 flex items-center justify-center">
+                  <div className="absolute inset-0 bg-gradient-to-tr from-primary/5 via-transparent to-transparent pointer-events-none" />
+                  
+                  {/* Mock Webcam bounding box outline */}
+                  <div className="relative border border-primary/40 rounded-lg p-2 flex flex-col items-center bg-zinc-900/50 w-44 h-32 justify-center">
+                    {/* Bounding box corner ticks */}
+                    <div className="absolute -top-1 -left-1 w-2 h-2 border-t-2 border-l-2 border-primary" />
+                    <div className="absolute -top-1 -right-1 w-2 h-2 border-t-2 border-r-2 border-primary" />
+                    <div className="absolute -bottom-1 -left-1 w-2 h-2 border-b-2 border-l-2 border-primary" />
+                    <div className="absolute -bottom-1 -right-1 w-2 h-2 border-b-2 border-r-2 border-primary" />
+                    
+                    {/* Mock avatar / face representation */}
+                    <div className="text-4xl filter grayscale contrast-150">😊</div>
+                    <div className="text-[10px] font-mono text-primary mt-2 uppercase tracking-widest font-bold">Face Detected</div>
+                    <div className="bg-primary/25 border border-primary/30 rounded px-1.5 py-0.5 mt-1 text-[8px] text-primary-foreground font-black">
+                      HAPPY 92.4%
+                    </div>
+                  </div>
+                  
+                  {/* Side status panel */}
+                  <div className="ml-4 flex flex-col gap-1.5 w-32">
+                    <div className="h-2 w-full bg-zinc-805 rounded overflow-hidden bg-zinc-800">
+                      <div className="h-full bg-primary rounded" style={{ width: '92%' }}></div>
+                    </div>
+                    <span className="text-[9px] text-zinc-500 uppercase tracking-widest">Happy (92%)</span>
+                    <div className="h-2 w-full bg-zinc-805 rounded overflow-hidden bg-zinc-800">
+                      <div className="h-full bg-zinc-700 rounded" style={{ width: '8%' }}></div>
+                    </div>
+                    <span className="text-[9px] text-zinc-500 uppercase tracking-widest">Neutral (8%)</span>
+                  </div>
+                </div>
+              </div>
+              <Link to="/dashboard">
+                <Button variant="outline" className="w-full text-xs gap-1 border-zinc-800 hover:bg-primary/10 hover:border-primary/30">
+                  Open Live Dashboard <ArrowRight className="h-3 w-3" />
+                </Button>
+              </Link>
+            </div>
+
+            {/* Tool 2: Public Speaking Trainer */}
+            <div className="bg-zinc-900/10 border border-zinc-800/80 rounded-2xl p-6 backdrop-blur-md hover:border-purple-500/20 transition-all duration-300 flex flex-col justify-between group">
+              <div>
+                <div className="flex items-center gap-3 mb-4">
+                  <div className="h-10 w-10 rounded-lg bg-purple-500/10 border border-purple-500/20 flex items-center justify-center text-purple-400 group-hover:scale-110 transition-transform duration-300">
+                    <BookOpen className="h-5 w-5" />
+                  </div>
+                  <h3 className="text-xl font-bold text-white font-display">2. Speaking Trainer</h3>
+                </div>
+                <p className="text-sm text-zinc-400 mb-6 leading-relaxed">
+                  <strong>Use Case:</strong> Presentation & speech practice. Use this to paste custom speech scripts, read from a scrolling teleprompter, and receive instant feedback on speaking stability and timing.
+                </p>
+
+                {/* Mini Visual Mockup of Prompter and Teleprompter */}
+                <div className="bg-zinc-950/60 border border-zinc-800/60 rounded-xl p-4 mb-6 relative overflow-hidden h-40 flex flex-col justify-between">
+                  <div className="text-[10px] text-zinc-500 uppercase tracking-widest border-b border-zinc-800 pb-1 flex justify-between">
+                    <span>Teleprompter Mode</span>
+                    <span className="text-purple-400 animate-pulse font-bold">● Rec</span>
+                  </div>
+                  
+                  {/* Scrolling prompter simulation */}
+                  <div className="my-2 text-center text-xs text-zinc-300 font-medium select-none overflow-hidden h-14 relative">
+                    <div className="text-[9px] text-zinc-600 line-through">Welcome to my keynote presentation.</div>
+                    <div className="text-purple-400 font-bold border-y border-purple-500/20 py-0.5 bg-purple-500/5">Today, I want to talk about how AI is shaping the future...</div>
+                    <div className="text-[9px] text-zinc-500">and how we can leverage these changes to build tools...</div>
+                  </div>
+
+                  {/* Meter status bar */}
+                  <div className="flex justify-between items-center text-[9px] text-zinc-500">
+                    <span>Duration: 01:24 / 03:00</span>
+                    <span className="bg-purple-500/10 border border-purple-500/20 px-1 rounded text-purple-400">Pace: 130 WPM</span>
+                  </div>
+                </div>
+              </div>
+              <Link to="/speaking-trainer">
+                <Button variant="outline" className="w-full text-xs gap-1 border-zinc-800 hover:bg-purple-500/10 hover:border-purple-500/30">
+                  Open Speaking Trainer <ArrowRight className="h-3 w-3" />
+                </Button>
+              </Link>
+            </div>
+
+            {/* Tool 3: Deep Analytics */}
+            <div className="bg-zinc-900/10 border border-zinc-800/80 rounded-2xl p-6 backdrop-blur-md hover:border-indigo-500/20 transition-all duration-300 flex flex-col justify-between group">
+              <div>
+                <div className="flex items-center gap-3 mb-4">
+                  <div className="h-10 w-10 rounded-lg bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-center text-indigo-400 group-hover:scale-110 transition-transform duration-300">
+                    <Activity className="h-5 w-5" />
+                  </div>
+                  <h3 className="text-xl font-bold text-white font-display">3. Emotional Intelligence Logs</h3>
+                </div>
+                <p className="text-sm text-zinc-400 mb-6 leading-relaxed">
+                  <strong>Use Case:</strong> Mood charting over time. Use this to review historical reports, stability averages, and positivity scores to see how your confidence improves day by day.
+                </p>
+
+                {/* Mini Visual Mockup of Line Chart */}
+                <div className="bg-zinc-950/60 border border-zinc-800/60 rounded-xl p-4 mb-6 relative overflow-hidden h-40 flex flex-col justify-between">
+                  <div className="text-[10px] text-zinc-500 uppercase tracking-widest border-b border-zinc-800 pb-1">
+                    Positivity & Confidence Curve
+                  </div>
+                  
+                  {/* Simulated Line Chart drawing via SVG */}
+                  <div className="h-20 w-full relative mt-2">
+                    <svg className="w-full h-full text-indigo-500" viewBox="0 0 100 40" fill="none" stroke="currentColor" strokeWidth="2">
+                      <path d="M 0 35 L 20 28 L 40 30 L 60 18 L 80 12 L 100 8" />
+                      <circle cx="20" cy="28" r="2" fill="currentColor" />
+                      <circle cx="40" cy="30" r="2" fill="currentColor" />
+                      <circle cx="60" cy="18" r="2" fill="currentColor" />
+                      <circle cx="80" cy="12" r="2" fill="currentColor" />
+                      <circle cx="100" cy="8" r="2" fill="currentColor" />
+                      {/* Gradient fill */}
+                      <path d="M 0 35 L 20 28 L 40 30 L 60 18 L 80 12 L 100 8 L 100 40 L 0 40 Z" fill="currentColor" fillOpacity="0.05" stroke="none" />
+                    </svg>
+                    {/* Metric badge overlay */}
+                    <div className="absolute top-2 left-2 bg-indigo-500/10 border border-indigo-500/25 px-1.5 py-0.5 rounded text-[8px] text-indigo-400 font-bold">
+                      +14.5% Growth
+                    </div>
+                  </div>
+                  
+                  <div className="flex justify-between text-[8px] text-zinc-600 uppercase font-bold px-1">
+                    <span>Mon</span>
+                    <span>Wed</span>
+                    <span>Fri</span>
+                    <span>Sun</span>
+                  </div>
+                </div>
+              </div>
+              <Link to="/analytics">
+                <Button variant="outline" className="w-full text-xs gap-1 border-zinc-800 hover:bg-indigo-500/10 hover:border-indigo-500/30">
+                  Open Analytics <ArrowRight className="h-3 w-3" />
+                </Button>
+              </Link>
+            </div>
+
+            {/* Tool 4: AI Tone Coach (Premium) */}
+            <div className="bg-zinc-900/10 border border-zinc-800/80 rounded-2xl p-6 backdrop-blur-md hover:border-emerald-500/20 transition-all duration-300 flex flex-col justify-between group">
+              <div>
+                <div className="flex items-center gap-3 mb-4">
+                  <div className="h-10 w-10 rounded-lg bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-400 group-hover:scale-110 transition-transform duration-300">
+                    <Zap className="h-5 w-5" />
+                  </div>
+                  <h3 className="text-xl font-bold text-white font-display">4. AI Tone Coach</h3>
+                </div>
+                <p className="text-sm text-zinc-400 mb-6 leading-relaxed">
+                  <strong>Use Case:</strong> Speaking dynamics analysis. Use this to audit vocal speed, energy, pause rhythms, and hesitation counts, helping you sound more authoritative and clear.
+                </p>
+
+                {/* Mini Visual Mockup of Audio analysis */}
+                <div className="bg-zinc-950/60 border border-zinc-800/60 rounded-xl p-4 mb-6 relative overflow-hidden h-40 flex flex-col justify-between">
+                  <div className="text-[10px] text-zinc-500 uppercase tracking-widest border-b border-zinc-800 pb-1 flex justify-between">
+                    <span>Vocal Energy Spectrogram</span>
+                    <span className="text-emerald-400 font-bold">Premium Mode</span>
+                  </div>
+                  
+                  {/* Simulated wave bars */}
+                  <div className="flex items-end justify-center gap-1.5 h-16 my-2">
+                    <div className="w-2.5 bg-zinc-800 rounded-t h-4 group-hover:bg-emerald-500/20 transition-all"></div>
+                    <div className="w-2.5 bg-zinc-700 rounded-t h-8 group-hover:bg-emerald-500/30 transition-all"></div>
+                    <div className="w-2.5 bg-zinc-800 rounded-t h-6 group-hover:bg-emerald-500/20 transition-all"></div>
+                    <div className="w-2.5 bg-emerald-500/40 rounded-t h-12"></div>
+                    <div className="w-2.5 bg-emerald-500/60 rounded-t h-14"></div>
+                    <div className="w-2.5 bg-emerald-500/30 rounded-t h-8"></div>
+                    <div className="w-2.5 bg-zinc-700 rounded-t h-10 group-hover:bg-emerald-500/35 transition-all"></div>
+                    <div className="w-2.5 bg-zinc-800 rounded-t h-5 group-hover:bg-emerald-500/20 transition-all"></div>
+                  </div>
+
+                  <div className="flex justify-between items-center text-[9px] text-zinc-500">
+                    <span>Vocal Confidence: 88/100</span>
+                    <span className="text-emerald-400">Energy Level: High</span>
+                  </div>
+                </div>
+              </div>
+              <Link to="/tone-coach">
+                <Button variant="outline" className="w-full text-xs gap-1 border-zinc-800 hover:bg-emerald-500/10 hover:border-emerald-500/30">
+                  Open Tone Coach <ArrowRight className="h-3 w-3" />
+                </Button>
+              </Link>
+            </div>
+
+          </div>
+        </div>
+      </section>
+
       {/* Step-by-Step Guidance Section */}
       <section className="relative py-24 px-4 bg-zinc-950/60 border-t border-zinc-900 overflow-hidden">
         {/* Decorative background doodles / blobs */}
