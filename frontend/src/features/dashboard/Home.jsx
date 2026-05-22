@@ -1,10 +1,9 @@
-import React from "react";
 import { Link } from "react-router-dom";
-import { Button } from "../../components/ui/Button";
-import { Card, CardContent } from "../../components/ui/Card";
-import { ArrowRight, BarChart3, Activity, ShieldCheck, Heart, Zap, Sparkles } from "lucide-react";
+import { ArrowRight, BarChart3, Activity, ShieldCheck, Heart, Zap, Sparkles, UserPlus, Video, BookOpen } from "lucide-react";
 import heroBg from "../../assets/hero_background.png";
 import logoImg from "../../assets/emotionsense_logo.png";
+import { Button } from "../../components/ui/Button";
+import { Card, CardContent } from "../../components/ui/Card";
 
 export const Home = () => {
   return (
@@ -127,10 +126,163 @@ export const Home = () => {
                 </div>
                 <h3 className="text-lg font-bold mb-2 text-white">Personal Mastery</h3>
                 <p className="text-sm text-zinc-400 leading-relaxed">
-                  By reviewing daily metrics and session histories, you develop absolute control over how you project your emotions, putting you steps ahead in any social or business dynamic.
+                  By reviewing daily daily metrics and session histories, you develop absolute control over how you project your emotions, putting you steps ahead in any social or business dynamic.
                 </p>
               </CardContent>
             </Card>
+          </div>
+        </div>
+      </section>
+
+      {/* Step-by-Step Guidance Section */}
+      <section className="relative py-24 px-4 bg-zinc-950/60 border-t border-zinc-900 overflow-hidden">
+        {/* Decorative background doodles / blobs */}
+        <div className="absolute top-1/2 left-0 -translate-y-1/2 w-[300px] h-[300px] bg-primary/5 rounded-full blur-[120px] pointer-events-none" />
+        <div className="absolute bottom-0 right-0 w-[250px] h-[250px] bg-purple-500/5 rounded-full blur-[100px] pointer-events-none" />
+
+        <div className="max-w-6xl mx-auto relative z-10">
+          {/* Section Header */}
+          <div className="text-center mb-16">
+            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-purple-500/10 border border-purple-500/20 text-purple-400 text-xs font-semibold uppercase tracking-wider mb-3">
+              <Sparkles className="h-3.5 w-3.5" /> Interactive Walkthrough
+            </div>
+            <h2 className="text-3xl md:text-5xl font-black tracking-tight mb-4 text-white">
+              How to Build Your Confidence
+            </h2>
+            <p className="text-zinc-400 max-w-xl mx-auto text-sm md:text-base">
+              A quick walkthrough to show you how to utilize our AI-powered features and metrics to practice public speaking.
+            </p>
+          </div>
+
+          {/* Stepper Cards */}
+          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8 relative">
+            {/* Step 1 */}
+            <div className="relative group">
+              <div className="absolute -top-6 -left-3 text-7xl font-black text-white/5 select-none transition-all group-hover:text-primary/10">01</div>
+              <Card className="bg-zinc-900/20 border-zinc-800/80 backdrop-blur-md hover:border-primary/30 transition-all duration-300 relative overflow-hidden h-full">
+                <CardContent className="pt-8 pb-6">
+                  {/* Decorative hand-drawn style doodle background (SVG) */}
+                  <svg className="absolute -right-4 -bottom-4 w-24 h-24 text-zinc-800/20 pointer-events-none group-hover:text-primary/5 transition-all duration-300" viewBox="0 0 100 100" fill="none" stroke="currentColor" strokeWidth="2">
+                    <circle cx="50" cy="50" r="30" strokeDasharray="5 5" />
+                    <path d="M20 20 L80 80 M80 20 L20 80" />
+                  </svg>
+                  
+                  <div className="h-12 w-12 rounded-xl bg-primary/10 border border-primary/20 flex items-center justify-center mb-6 text-primary group-hover:scale-110 transition-transform duration-300">
+                    <UserPlus className="h-6 w-6" />
+                  </div>
+                  <h3 className="text-lg font-bold mb-2 text-white font-display">Create Account</h3>
+                  <p className="text-xs text-zinc-400 leading-relaxed">
+                    Sign up or log in to secure your private workspace. This unlocks session history tracking and personalized growth benchmarks.
+                  </p>
+                </CardContent>
+              </Card>
+              {/* Hand-drawn connector arrow to Step 2 (visible on desktop) */}
+              <div className="hidden lg:block absolute top-1/2 -right-7 -translate-y-1/2 w-12 h-8 z-20 pointer-events-none text-zinc-700/60 group-hover:text-primary/45 transition-colors duration-300">
+                <svg className="w-full h-full" viewBox="0 0 48 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+                  <path d="M4 12 C 12 4, 36 20, 44 12" strokeDasharray="4 4" />
+                  <path d="M38 6 L44 12 L38 18" />
+                </svg>
+              </div>
+            </div>
+
+            {/* Step 2 */}
+            <div className="relative group">
+              <div className="absolute -top-6 -left-3 text-7xl font-black text-white/5 select-none transition-all group-hover:text-purple-500/10">02</div>
+              <Card className="bg-zinc-900/20 border-zinc-800/80 backdrop-blur-md hover:border-purple-500/30 transition-all duration-300 relative overflow-hidden h-full">
+                <CardContent className="pt-8 pb-6">
+                  {/* Decorative Hand-drawn swirl doodle SVG */}
+                  <svg className="absolute -right-4 -bottom-4 w-24 h-24 text-zinc-800/20 pointer-events-none group-hover:text-purple-500/5 transition-all duration-300" viewBox="0 0 100 100" fill="none" stroke="currentColor" strokeWidth="2">
+                    <path d="M10 50 C 30 20, 70 80, 90 50" strokeDasharray="3 3" />
+                    <circle cx="90" cy="50" r="4" fill="currentColor" />
+                  </svg>
+                  
+                  <div className="h-12 w-12 rounded-xl bg-purple-500/10 border border-purple-500/20 flex items-center justify-center mb-6 text-purple-400 group-hover:scale-110 transition-transform duration-300">
+                    <Video className="h-6 w-6" />
+                  </div>
+                  <h3 className="text-lg font-bold mb-2 text-white font-display">Enable Camera</h3>
+                  <p className="text-xs text-zinc-400 leading-relaxed">
+                    Go to the Live Dashboard or Speaking Trainer. Grant camera access to initialize our lightweight face tracking boundary box.
+                  </p>
+                </CardContent>
+              </Card>
+              {/* Hand-drawn connector arrow to Step 3 (visible on desktop) */}
+              <div className="hidden lg:block absolute top-1/2 -right-7 -translate-y-1/2 w-12 h-8 z-20 pointer-events-none text-zinc-700/60 group-hover:text-purple-500/45 transition-colors duration-300">
+                <svg className="w-full h-full" viewBox="0 0 48 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+                  <path d="M4 12 C 12 20, 36 4, 44 12" strokeDasharray="4 4" />
+                  <path d="M38 6 L44 12 L38 18" />
+                </svg>
+              </div>
+            </div>
+
+            {/* Step 3 */}
+            <div className="relative group">
+              <div className="absolute -top-6 -left-3 text-7xl font-black text-white/5 select-none transition-all group-hover:text-indigo-500/10">03</div>
+              <Card className="bg-zinc-900/20 border-zinc-800/80 backdrop-blur-md hover:border-indigo-500/30 transition-all duration-300 relative overflow-hidden h-full">
+                <CardContent className="pt-8 pb-6">
+                  {/* Decorative abstract box doodle SVG */}
+                  <svg className="absolute -right-4 -bottom-4 w-24 h-24 text-zinc-800/20 pointer-events-none group-hover:text-indigo-500/5 transition-all duration-300" viewBox="0 0 100 100" fill="none" stroke="currentColor" strokeWidth="2">
+                    <rect x="25" y="25" width="50" height="50" rx="5" strokeDasharray="4 4" />
+                    <path d="M40 50 L60 50 M50 40 L50 60" />
+                  </svg>
+                  
+                  <div className="h-12 w-12 rounded-xl bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-center mb-6 text-indigo-400 group-hover:scale-110 transition-transform duration-300">
+                    <BookOpen className="h-6 w-6" />
+                  </div>
+                  <h3 className="text-lg font-bold mb-2 text-white font-display">Configure Scripts</h3>
+                  <p className="text-xs text-zinc-400 leading-relaxed">
+                    Select an AI-generated speech preset or paste your own custom presentation script. Set your target duration (30s to 3m) to begin.
+                  </p>
+                </CardContent>
+              </Card>
+              {/* Hand-drawn connector arrow to Step 4 (visible on desktop) */}
+              <div className="hidden lg:block absolute top-1/2 -right-7 -translate-y-1/2 w-12 h-8 z-20 pointer-events-none text-zinc-700/60 group-hover:text-indigo-500/45 transition-colors duration-300">
+                <svg className="w-full h-full" viewBox="0 0 48 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+                  <path d="M4 12 C 12 4, 36 20, 44 12" strokeDasharray="4 4" />
+                  <path d="M38 6 L44 12 L38 18" />
+                </svg>
+              </div>
+            </div>
+
+            {/* Step 4 */}
+            <div className="relative group">
+              <div className="absolute -top-6 -left-3 text-7xl font-black text-white/5 select-none transition-all group-hover:text-emerald-500/10">04</div>
+              <Card className="bg-zinc-900/20 border-zinc-800/80 backdrop-blur-md hover:border-emerald-500/30 transition-all duration-300 relative overflow-hidden h-full">
+                <CardContent className="pt-8 pb-6">
+                  {/* Decorative target/arrows doodle SVG */}
+                  <svg className="absolute -right-4 -bottom-4 w-24 h-24 text-zinc-800/20 pointer-events-none group-hover:text-emerald-500/5 transition-all duration-300" viewBox="0 0 100 100" fill="none" stroke="currentColor" strokeWidth="2">
+                    <circle cx="50" cy="50" r="10" />
+                    <circle cx="50" cy="50" r="25" />
+                    <path d="M50 10 L50 25 M50 75 L50 90 M10 50 L25 50 M75 50 L90 50" />
+                  </svg>
+                  
+                  <div className="h-12 w-12 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center mb-6 text-emerald-400 group-hover:scale-110 transition-transform duration-300">
+                    <BarChart3 className="h-6 w-6" />
+                  </div>
+                  <h3 className="text-lg font-bold mb-2 text-white font-display">Practice & Analytics</h3>
+                  <p className="text-xs text-zinc-400 leading-relaxed">
+                    Follow the scrolling prompter. Real-time feedback alerts suggest improvements. Complete the run to view your stability, eye-contact, and confidence curves.
+                  </p>
+                </CardContent>
+              </Card>
+            </div>
+          </div>
+
+          {/* Quick interactive mode guide doodle banner */}
+          <div className="mt-16 p-8 rounded-2xl border border-white/[0.05] bg-zinc-900/25 backdrop-blur-md flex flex-col md:flex-row items-center justify-between gap-6 hover:border-purple-500/20 transition-all duration-300">
+            <div className="flex items-center gap-4 text-left">
+              <div className="h-12 w-12 rounded-full bg-gradient-to-tr from-primary to-purple-500 flex items-center justify-center text-white font-black shadow-lg">
+                🚀
+              </div>
+              <div>
+                <h4 className="text-lg font-bold text-white font-display">Ready to master your communication?</h4>
+                <p className="text-xs text-zinc-400 mt-0.5">Explore the live camera feedback modes and practice presentations to start building confidence.</p>
+              </div>
+            </div>
+            <Link to="/dashboard">
+              <Button className="gap-2 font-semibold">
+                Start Free Session <ArrowRight className="h-4 w-4" />
+              </Button>
+            </Link>
           </div>
         </div>
       </section>
