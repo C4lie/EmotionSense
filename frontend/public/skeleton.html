@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Skeleton Loading Screen - EmotionSense AI</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    /* CSS CUSTOM PROPERTIES */
+    :root {
+      --bg-color: #0a0a0a;
+      --card-bg: #111111;
+      --border-color: rgba(255, 255, 255, 0.06);
+      --text-primary: #ffffff;
+      --text-secondary: #a1a1aa;
+      --accent-color: #3b82f6;
+      --accent-glow: rgba(59, 130, 246, 0.15);
+      
+      /* Skeleton Variables */
+      --skeleton-base: #1a1a1a;
+      --skeleton-shimmer: linear-gradient(
+        90deg,
+        transparent,
+        rgba(255, 255, 255, 0.04),
+        rgba(255, 255, 255, 0.08),
+        rgba(255, 255, 255, 0.04),
+        transparent
+      );
+      --skeleton-speed: 1.8s;
+    }
+
+    /* PURE CSS THEME SWITCHING (VIA HIDDEN CHECKBOX) */
+    #theme-switch {
+      display: none;
+    }
+
+    #theme-switch:checked ~ .app-wrapper {
+      --bg-color: #f7f7f8;
+      --card-bg: #ffffff;
+      --border-color: rgba(0, 0, 0, 0.08);
+      --text-primary: #0f172a;
+      --text-secondary: #475569;
+      --accent-color: #2563eb;
+      --accent-glow: rgba(37, 99, 235, 0.1);
+      
+      /* Light Theme Skeleton Colors */
+      --skeleton-base: #e2e8f0;
+      --skeleton-shimmer: linear-gradient(
+        90deg,
+        transparent,
+        rgba(0, 0, 0, 0.02),
+        rgba(0, 0, 0, 0.05),
+        rgba(0, 0, 0, 0.02),
+        transparent
+      );
+    }
+
+    /* GLOBAL RESET & STYLING */
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: var(--bg-color);
+      color: var(--text-primary);
+      transition: background-color 0.3s ease, color 0.3s ease;
+    }
+
+    .app-wrapper {
+      min-height: 100vh;
+      background-color: var(--bg-color);
+      padding: 40px 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      transition: background-color 0.3s ease;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 900px;
+      display: flex;
+      flex-direction: column;
+      gap: 40px;
+    }
+
+    /* DEMO HEADER */
+    .demo-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-bottom: 24px;
+      border-b: 1px solid var(--border-color);
+    }
+
+    .demo-title h1 {
+      font-size: 24px;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      margin-bottom: 6px;
+    }
+
+    .demo-title p {
+      font-size: 14px;
+      color: var(--text-secondary);
+    }
+
+    /* THEME TOGGLE BUTTON STYLES */
+    .toggle-label {
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 8px 16px;
+      background-color: var(--card-bg);
+      border: 1px solid var(--border-color);
+      border-radius: 9999px;
+      font-size: 13px;
+      font-weight: 600;
+      user-select: none;
+      transition: all 0.2s ease;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    }
+
+    .toggle-label:hover {
+      border-color: var(--accent-color);
+      box-shadow: 0 0 12px var(--accent-glow);
+    }
+
+    .toggle-icon {
+      width: 16px;
+      height: 16px;
+      position: relative;
+    }
+
+    /* Pure CSS Switch Icon change */
+    .toggle-icon::before {
+      content: "☀️"; /* Shows Sun for switching to light mode */
+    }
+
+    #theme-switch:checked ~ .app-wrapper .toggle-icon::before {
+      content: "🌙"; /* Shows Moon for switching to dark mode */
+    }
+
+    /* SKELETON BASE & SHIMMER SYSTEM */
+    .skeleton {
+      background-color: var(--skeleton-base);
+      position: relative;
+      overflow: hidden;
+      border-radius: 8px; /* Standard rounded corners */
+      transition: background-color 0.3s ease;
+    }
+
+    /* Shimmer gradient overlay */
+    .skeleton::after {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-image: var(--skeleton-shimmer);
+      background-size: 200% 100%;
+      animation: shimmer var(--skeleton-speed) ease-in-out infinite;
+    }
+
+    @keyframes shimmer {
+      0% {
+        background-position: -200% 0;
+      }
+      100% {
+        background-position: 200% 0;
+      }
+    }
+
+    /* SKELETON SHAPE MODIFIERS */
+    .skeleton--circle {
+      border-radius: 50%;
+    }
+
+    .skeleton--text {
+      height: 14px;
+    }
+
+    .skeleton--text-sm {
+      height: 11px;
+    }
+
+    .skeleton--image {
+      aspect-ratio: 16 / 9;
+      width: 100%;
+      border-radius: 8px;
+    }
+
+    /* ACCESSIBILITY: Disable animations for users who prefer reduced motion */
+    @media (prefers-reduced-motion: reduce) {
+      .skeleton::after {
+        animation: none;
+        display: none;
+      }
+    }
+
+    /* SECTION CONTAINERS */
+    .section-card {
+      background-color: var(--card-bg);
+      border: 1px solid var(--border-color);
+      border-radius: 16px;
+      padding: 24px;
+      transition: background-color 0.3s ease, border-color 0.3s ease;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    }
+
+    .section-title {
+      font-size: 16px;
+      font-weight: 600;
+      margin-bottom: 20px;
+      color: var(--text-primary);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    /* --- LAYOUT PATTERN 1: PROFILE HEADER --- */
+    .profile-header {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .profile-avatar {
+      width: 56px;
+      height: 56px;
+      flex-shrink: 0;
+    }
+
+    .profile-info {
+      flex-grow: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    /* --- LAYOUT PATTERN 2: CARD GRID --- */
+    .card-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+    }
+
+    .grid-card {
+      background-color: var(--card-bg);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      transition: background-color 0.3s ease, border-color 0.3s ease;
+    }
+
+    .grid-card-text-group {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    /* Collapses to 1 column below 640px */
+    @media (max-width: 640px) {
+      .card-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* --- LAYOUT PATTERN 3: CONTENT LIST --- */
+    .content-list {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .content-row {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      padding: 14px 0;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    .content-row:last-child {
+      border-bottom: none;
+      padding-bottom: 0;
+    }
+
+    .content-row:first-child {
+      padding-top: 0;
+    }
+
+    .content-avatar {
+      width: 40px;
+      height: 40px;
+      flex-shrink: 0;
+    }
+
+    .content-info {
+      flex-grow: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Hidden Switch for Pure CSS Theme Toggle -->
+  <input type="checkbox" id="theme-switch">
+
+  <div class="app-wrapper">
+    <div class="container">
+      
+      <!-- Demo Page Header -->
+      <header class="demo-header">
+        <div class="demo-title">
+          <h1>Skeleton Loaders</h1>
+          <p>Pure HTML & CSS responsive animated shimmer placeholders</p>
+        </div>
+        <label for="theme-switch" class="toggle-label">
+          <span class="toggle-icon"></span>
+          Toggle Theme
+        </label>
+      </header>
+
+      <!-- All patterns placed inside an aria-busy="true" wrapper for accessibility -->
+      <main aria-busy="true" aria-live="polite">
+        <div style="display: flex; flex-direction: column; gap: 30px;">
+          
+          <!-- PATTERN 1: PROFILE HEADER -->
+          <section class="section-card">
+            <h2 class="section-title">1. Profile Header</h2>
+            <div class="profile-header">
+              <div class="skeleton skeleton--circle profile-avatar" aria-hidden="true"></div>
+              <div class="profile-info">
+                <div class="skeleton skeleton--text" style="width: 40%;" aria-hidden="true"></div>
+                <div class="skeleton skeleton--text-sm" style="width: 65%;" aria-hidden="true"></div>
+              </div>
+            </div>
+          </section>
+
+          <!-- PATTERN 2: CARD GRID -->
+          <section class="section-card">
+            <h2 class="section-title">2. Card Grid</h2>
+            <div class="card-grid">
+              
+              <!-- Card 1 -->
+              <div class="grid-card">
+                <div class="skeleton skeleton--image" aria-hidden="true"></div>
+                <div class="grid-card-text-group">
+                  <div class="skeleton skeleton--text" style="width: 100%;" aria-hidden="true"></div>
+                  <div class="skeleton skeleton--text-sm" style="width: 80%;" aria-hidden="true"></div>
+                  <div class="skeleton skeleton--text-sm" style="width: 50%;" aria-hidden="true"></div>
+                </div>
+              </div>
+
+              <!-- Card 2 -->
+              <div class="grid-card">
+                <div class="skeleton skeleton--image" aria-hidden="true"></div>
+                <div class="grid-card-text-group">
+                  <div class="skeleton skeleton--text" style="width: 100%;" aria-hidden="true"></div>
+                  <div class="skeleton skeleton--text-sm" style="width: 80%;" aria-hidden="true"></div>
+                  <div class="skeleton skeleton--text-sm" style="width: 50%;" aria-hidden="true"></div>
+                </div>
+              </div>
+
+              <!-- Card 3 -->
+              <div class="grid-card">
+                <div class="skeleton skeleton--image" aria-hidden="true"></div>
+                <div class="grid-card-text-group">
+                  <div class="skeleton skeleton--text" style="width: 100%;" aria-hidden="true"></div>
+                  <div class="skeleton skeleton--text-sm" style="width: 80%;" aria-hidden="true"></div>
+                  <div class="skeleton skeleton--text-sm" style="width: 50%;" aria-hidden="true"></div>
+                </div>
+              </div>
+
+            </div>
+          </section>
+
+          <!-- PATTERN 3: CONTENT LIST -->
+          <section class="section-card">
+            <h2 class="section-title">3. Content List</h2>
+            <div class="content-list">
+              
+              <!-- Row 1 -->
+              <div class="content-row">
+                <div class="skeleton skeleton--circle content-avatar" aria-hidden="true"></div>
+                <div class="content-info">
+                  <div class="skeleton skeleton--text" style="width: 55%;" aria-hidden="true"></div>
+                  <div class="skeleton skeleton--text-sm" style="width: 35%;" aria-hidden="true"></div>
+                </div>
+              </div>
+
+              <!-- Row 2 -->
+              <div class="content-row">
+                <div class="skeleton skeleton--circle content-avatar" aria-hidden="true"></div>
+                <div class="content-info">
+                  <div class="skeleton skeleton--text" style="width: 55%;" aria-hidden="true"></div>
+                  <div class="skeleton skeleton--text-sm" style="width: 35%;" aria-hidden="true"></div>
+                </div>
+              </div>
+
+              <!-- Row 3 -->
+              <div class="content-row">
+                <div class="skeleton skeleton--circle content-avatar" aria-hidden="true"></div>
+                <div class="content-info">
+                  <div class="skeleton skeleton--text" style="width: 55%;" aria-hidden="true"></div>
+                  <div class="skeleton skeleton--text-sm" style="width: 35%;" aria-hidden="true"></div>
+                </div>
+              </div>
+
+              <!-- Row 4 -->
+              <div class="content-row">
+                <div class="skeleton skeleton--circle content-avatar" aria-hidden="true"></div>
+                <div class="content-info">
+                  <div class="skeleton skeleton--text" style="width: 55%;" aria-hidden="true"></div>
+                  <div class="skeleton skeleton--text-sm" style="width: 35%;" aria-hidden="true"></div>
+                </div>
+              </div>
+
+            </div>
+          </section>
+
+        </div>
+      </main>
+    </div>
+  </div>
+
+</body>
+</html>

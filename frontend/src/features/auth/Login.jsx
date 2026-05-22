@@ -49,21 +49,16 @@ export const Login = () => {
   };
 
   return (
-    <div className="min-h-[85vh] flex items-center justify-center px-4 py-12">
-      {/* Background radial glows */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none z-0">
-        <div className="absolute top-[20%] left-[50%] -translate-x-1/2 w-[400px] h-[400px] bg-primary/20 rounded-full blur-[120px] opacity-60" />
-      </div>
-
-      <div className="relative z-10 w-full max-w-md">
+    <div className="min-h-[80vh] flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
+      <div className="w-full max-w-md">
         {/* Logo / Header */}
         <div className="text-center mb-8">
           <Link to="/" className="inline-flex items-center gap-2.5 mb-4 group">
-            <div className="h-10 w-10 rounded-xl bg-primary/20 border border-primary/40 flex items-center justify-center group-hover:scale-105 transition-all duration-300">
-              <Smile className="h-6 w-6 text-primary" />
+            <div className="h-10 w-10 rounded-xl bg-zinc-900 border border-zinc-800 flex items-center justify-center group-hover:scale-105 transition-all duration-300">
+              <Smile className="h-6 w-6 text-zinc-100" />
             </div>
             <span className="text-2xl font-extrabold tracking-tight text-white">
-              EmotionSense<span className="text-primary">AI</span>
+              EmotionSense<span className="text-zinc-400">AI</span>
             </span>
           </Link>
           <h2 className="text-2xl font-bold tracking-tight text-white">Welcome Back</h2>
@@ -73,7 +68,7 @@ export const Login = () => {
         </div>
 
         {/* Card Form */}
-        <div className="bg-zinc-900/40 backdrop-blur-xl border border-white/10 rounded-2xl p-8 shadow-2xl">
+        <div className="bg-zinc-900 border border-zinc-800 rounded-xl p-8 shadow-sm">
           <form onSubmit={handleSubmit} className="space-y-5">
             {/* Error Indicators */}
             {(validationError || error) && (
@@ -98,7 +93,7 @@ export const Login = () => {
                   placeholder="name@example.com"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className="flex h-11 w-full rounded-lg border border-white/10 bg-black/40 pl-11 pr-3 py-2 text-sm text-foreground placeholder:text-muted-foreground/50 ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:border-primary transition-all duration-300"
+                  className="flex h-11 w-full rounded-lg border border-zinc-800 bg-zinc-950 pl-11 pr-3 py-2 text-sm text-foreground placeholder:text-muted-foreground/50 ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-zinc-700 focus-visible:ring-offset-2 focus-visible:border-zinc-700 transition-all duration-200"
                   required
                 />
               </div>
@@ -121,7 +116,7 @@ export const Login = () => {
                   placeholder="••••••••"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="flex h-11 w-full rounded-lg border border-white/10 bg-black/40 pl-11 pr-3 py-2 text-sm text-foreground placeholder:text-muted-foreground/50 ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:border-primary transition-all duration-300"
+                  className="flex h-11 w-full rounded-lg border border-zinc-800 bg-zinc-950 pl-11 pr-3 py-2 text-sm text-foreground placeholder:text-muted-foreground/50 ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-zinc-700 focus-visible:ring-offset-2 focus-visible:border-zinc-700 transition-all duration-200"
                   required
                 />
               </div>
@@ -143,7 +138,7 @@ export const Login = () => {
             Don't have an account?{" "}
             <Link
               to="/register"
-              className="font-medium text-primary hover:text-blue-400 transition-colors"
+              className="font-medium text-zinc-200 hover:text-white transition-colors"
             >
               Register here
             </Link>

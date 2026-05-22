@@ -38,7 +38,11 @@ async def create_session(
 ):
     try:
         session = await session_service.create_session_with_records(
-            db, user_id=current_user_id, records=session_in.records
+            db,
+            user_id=current_user_id,
+            records=session_in.records,
+            session_type=session_in.session_type,
+            script_text=session_in.script_text
         )
         await db.commit()
         

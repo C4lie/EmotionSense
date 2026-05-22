@@ -50,6 +50,14 @@ class EmotionSession(UUIDMixin, TimestampMixin, Base):
     dominant_emotion: Mapped[Optional[str]] = mapped_column(String(50), nullable=True)
     average_confidence: Mapped[Optional[float]] = mapped_column(Float, nullable=True)
 
+    # V2 Speaking Trainer metrics
+    session_type: Mapped[str] = mapped_column(String(50), default="live", server_default="live", nullable=False)
+    confidence_score: Mapped[Optional[float]] = mapped_column(Float, nullable=True)
+    stability_score: Mapped[Optional[float]] = mapped_column(Float, nullable=True)
+    eye_contact_score: Mapped[Optional[float]] = mapped_column(Float, nullable=True)
+    speaking_energy: Mapped[Optional[float]] = mapped_column(Float, nullable=True)
+    script_text: Mapped[Optional[str]] = mapped_column(String, nullable=True)
+
     # Session timing
     started_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True),

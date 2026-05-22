@@ -34,13 +34,13 @@ class ConnectionManager:
         """Accept a new WebSocket connection and register it."""
         await websocket.accept()
         self._active_connections[session_id] = websocket
-        logger.info(f"[WS] Client connected — session_id={session_id}")
+        logger.info(f"[WS] Client connected - session_id={session_id}")
 
     def disconnect(self, session_id: str) -> None:
         """Remove a disconnected WebSocket from the registry."""
         if session_id in self._active_connections:
             del self._active_connections[session_id]
-            logger.info(f"[WS] Client disconnected — session_id={session_id}")
+            logger.info(f"[WS] Client disconnected - session_id={session_id}")
 
     async def send_json(self, session_id: str, data: dict) -> None:
         """Send a JSON payload to a specific session's WebSocket."""

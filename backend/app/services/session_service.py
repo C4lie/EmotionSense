@@ -36,6 +36,8 @@ class SessionService:
         self,
         db: AsyncSession,
         user_id: Optional[uuid.UUID] = None,
+        session_type: str = "live",
+        script_text: Optional[str] = None,
     ) -> EmotionSession:
         """
         Create a new EmotionSession row.
@@ -43,17 +45,21 @@ class SessionService:
         Args:
             db: Active async database session.
             user_id: Optional user ID (None for guest/unauthenticated usage).
+            session_type: Type of the session ("live" or "speaking").
+            script_text: Optional text prompt read during the session.
 
         Returns:
             The newly created and flushed EmotionSession instance.
         """
         session = EmotionSession(
             user_id=user_id,
+            session_type=session_type,
+            script_text=script_text,
             started_at=datetime.now(timezone.utc),
         )
         db.add(session)
         await db.flush()  # Get the generated UUID without committing
-        logger.debug(f"[Session] Created session {session.id} (user_id={user_id})")
+        logger.debug(f"[Session] Created {session_type} session {session.id} (user_id={user_id})")
         return session
 
     async def add_records(
@@ -112,7 +118,8 @@ class SessionService:
         Finalise a session by aggregating summary statistics.
 
         Computes dominant_emotion and average_confidence from all records
-        in this session and writes ended_at timestamp.
+        in this session and writes ended_at timestamp. Also calculates
+        speaking trainer scores if applicable.
 
         Args:
             db: Active async database session.
@@ -127,6 +134,8 @@ class SessionService:
         )
         records: List[EmotionRecord] = list(result.scalars().all())
 
+        session.ended_at = datetime.now(timezone.utc)
+
         if records:
             # Compute dominant emotion: most frequently occurring
             emotion_counts: dict = {}
@@ -140,12 +149,21 @@ class SessionService:
             session.dominant_emotion = dominant
             session.average_confidence = round(avg_conf, 2)
 
-        session.ended_at = datetime.now(timezone.utc)
+            # Compute V2 telemetry metrics if speaking session
+            if session.session_type == "speaking":
+                duration_seconds = max(1.0, (session.ended_at - session.started_at).total_seconds())
+                from app.services.confidence_service import confidence_service
+                metrics = confidence_service.calculate_metrics(records, duration_seconds)
+                session.confidence_score = metrics["confidence_score"]
+                session.stability_score = metrics["stability_score"]
+                session.eye_contact_score = metrics["eye_contact_score"]
+                session.speaking_energy = metrics["speaking_energy"]
+
         await db.flush()
 
         logger.info(
             f"[Session] Closed session {session.id}: "
-            f"dominant={session.dominant_emotion} "
+            f"type={session.session_type} dominant={session.dominant_emotion} "
             f"avg_conf={session.average_confidence}"
         )
         return session
@@ -170,13 +188,23 @@ class SessionService:
     ) -> tuple[int, List[EmotionSession]]:
         """Fetch user sessions, paginated."""
         offset = (page - 1) * size
-        count_stmt = select(func.count(EmotionSession.id)).where(EmotionSession.user_id == user_id)
+        count_stmt = select(func.count(EmotionSession.id)).where(
+            and_(
+                EmotionSession.user_id == user_id,
+                EmotionSession.dominant_emotion.isnot(None)
+            )
+        )
         count_res = await db.execute(count_stmt)
         total = count_res.scalar_one()
 
         stmt = (
             select(EmotionSession)
-            .where(EmotionSession.user_id == user_id)
+            .where(
+                and_(
+                    EmotionSession.user_id == user_id,
+                    EmotionSession.dominant_emotion.isnot(None)
+                )
+            )
             .order_by(EmotionSession.started_at.desc())
             .offset(offset)
             .limit(size)
@@ -205,6 +233,8 @@ class SessionService:
         db: AsyncSession,
         user_id: uuid.UUID,
         records: List[any],
+        session_type: str = "live",
+        script_text: Optional[str] = None,
     ) -> EmotionSession:
         """
         Create a new EmotionSession, batch insert its frame records, and finalise it.
@@ -218,6 +248,8 @@ class SessionService:
 
         session = EmotionSession(
             user_id=user_id,
+            session_type=session_type,
+            script_text=script_text,
             started_at=started_at,
         )
         db.add(session)

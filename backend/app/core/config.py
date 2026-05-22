@@ -38,6 +38,20 @@ class Settings(BaseSettings):
     # ─── Database ────────────────────────────────────────────────
     DATABASE_URL: str = "postgresql+asyncpg://postgres:password@localhost:5432/emotionsense"
 
+    @field_validator("DATABASE_URL", mode="before")
+    @classmethod
+    def assemble_db_url(cls, value: Any) -> str:
+        """Normalize database connection string for asyncpg and cloud providers."""
+        if isinstance(value, str):
+            # If it starts with postgres:// or postgresql:// and doesn't contain a + driver, insert +asyncpg
+            if value.startswith("postgres://") or (value.startswith("postgresql://") and "+asyncpg" not in value):
+                value = value.replace("postgres://", "postgresql+asyncpg://", 1)
+                value = value.replace("postgresql://", "postgresql+asyncpg://", 1)
+            # Replace sslmode= with ssl= for asyncpg compatibility
+            if "sslmode=" in value:
+                value = value.replace("sslmode=", "ssl=")
+        return value
+
     # ─── JWT Auth ────────────────────────────────────────────────
     JWT_SECRET_KEY: str = "dev-secret-key-change-in-production"
     JWT_ALGORITHM: str = "HS256"
@@ -47,6 +61,8 @@ class Settings(BaseSettings):
     BACKEND_CORS_ORIGINS: list[str] = [
         "http://localhost:5173",
         "http://localhost:3000",
+        "http://127.0.0.1:5173",
+        "http://127.0.0.1:3000",
     ]
 
     @field_validator("BACKEND_CORS_ORIGINS", mode="before")

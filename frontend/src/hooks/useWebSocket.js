@@ -18,32 +18,68 @@ export const useWebSocket = () => {
   } = useWebcamStore();
 
   const getWsUrl = () => {
-    if (import.meta.env.VITE_WS_URL) {
-      return import.meta.env.VITE_WS_URL;
+    let wsUrl = import.meta.env.VITE_WS_URL || "";
+    
+    // Normalize localhost to 127.0.0.1 to avoid Windows IPv6 uvicorn binding issue
+    if (wsUrl.includes("localhost")) {
+      wsUrl = wsUrl.replace("localhost", "127.0.0.1");
     }
+
+    if (wsUrl) {
+      if (!wsUrl.endsWith("/ws/detect")) {
+        wsUrl = wsUrl.replace(/\/$/, "");
+        wsUrl = `${wsUrl}/ws/detect`;
+      }
+      return wsUrl;
+    }
+
     // Dynamically derive from VITE_API_URL or default to localhost
-    const apiBase = import.meta.env.VITE_API_URL || "http://localhost:8000/api";
+    let apiBase = import.meta.env.VITE_API_URL || "http://127.0.0.1:8000/api";
+    if (apiBase.includes("localhost")) {
+      apiBase = apiBase.replace("localhost", "127.0.0.1");
+    }
+
     try {
       const url = new URL(apiBase);
       const protocol = url.protocol === "https:" ? "wss:" : "ws:";
-      // Strip '/api' from pathname suffix and map to websocket endpoint
       const wsHost = url.host;
       return `${protocol}//${wsHost}/ws/detect`;
     } catch (err) {
       // Fallback
-      return "ws://localhost:8000/ws/detect";
+      return "ws://127.0.0.1:8000/ws/detect";
     }
   };
 
-  const connect = useCallback(() => {
+  const optionsRef = useRef({});
+
+  const connect = useCallback((options = {}) => {
     if (socketRef.current || isConnectingRef.current) return;
+
+    if (Object.keys(options).length > 0) {
+      optionsRef.current = options;
+    }
 
     isConnectingRef.current = true;
     const wsUrl = getWsUrl();
     const token = useAuthStore.getState().token;
-    const fullUrl = token ? `${wsUrl}?token=${token}` : wsUrl;
+    
+    const params = new URLSearchParams();
+    if (token) {
+      params.append("token", token);
+    }
+    
+    const activeOpts = optionsRef.current;
+    if (activeOpts.session_type) {
+      params.append("session_type", activeOpts.session_type);
+    }
+    if (activeOpts.script_text) {
+      params.append("script_text", activeOpts.script_text);
+    }
 
-    console.log("[WS] Connecting to:", wsUrl);
+    const queryString = params.toString();
+    const fullUrl = queryString ? `${wsUrl}?${queryString}` : wsUrl;
+
+    console.log("[WS] Connecting to:", fullUrl);
 
     try {
       const ws = new WebSocket(fullUrl);
@@ -76,9 +112,10 @@ export const useWebSocket = () => {
           }
 
           // Persist details if capturing session is active
-          if (isCountdownRunning && facesData.length > 0) {
+          const webcamState = useWebcamStore.getState();
+          if (webcamState.isCountdownRunning && facesData.length > 0) {
             facesData.forEach((face) => {
-              addCapturedRecord({
+              webcamState.addCapturedRecord({
                 timestamp: new Date().toISOString(),
                 face_index: face.face_index,
                 box_x: face.box.x,

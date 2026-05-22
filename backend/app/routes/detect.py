@@ -126,7 +126,7 @@ async def detect_image(
 
     processing_time_ms = (time.perf_counter() - t_start) * 1000
     logger.info(
-        f"[Detect] /image → {len(faces)} face(s) detected in {processing_time_ms:.1f}ms "
+        f"[Detect] /image -> {len(faces)} face(s) detected in {processing_time_ms:.1f}ms "
         f"(user={'guest' if not current_user_id else str(current_user_id)})"
     )
 
@@ -272,7 +272,7 @@ async def detect_video(
         average_confidence = round(sum(e.confidence for e in timeline) / len(timeline), 2)
 
     logger.info(
-        f"[Detect] /video → {len(timeline)} sampled frames, "
+        f"[Detect] /video -> {len(timeline)} sampled frames, "
         f"dominant={dominant_emotion}, "
         f"time={processing_time_ms:.0f}ms"
     )

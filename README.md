@@ -41,6 +41,7 @@ venv\Scripts\activate    # Windows
 pip install -r requirements.txt
 cp .env.example .env    # Fill in your environment variables
 python -m app.main      # Starts development server
+uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
 ```
 
 ### Frontend Setup

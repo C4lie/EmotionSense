@@ -8,5 +8,7 @@ on Base.metadata before `init_db()` creates the database tables.
 from app.models.user import User
 from app.models.session import EmotionSession
 from app.models.record import EmotionRecord
+from app.models.subscription import Subscription
+from app.models.tone_report import ToneReport
 
-__all__ = ["User", "EmotionSession", "EmotionRecord"]
+__all__ = ["User", "EmotionSession", "EmotionRecord", "Subscription", "ToneReport"]

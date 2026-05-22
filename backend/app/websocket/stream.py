@@ -41,7 +41,6 @@ from app.websocket.connection import connection_manager
 async def handle_stream(
     websocket: WebSocket,
     token: Optional[str] = None,
-    db=None,
 ) -> None:
     """
     Main WebSocket stream handler.
@@ -51,7 +50,6 @@ async def handle_stream(
     Args:
         websocket: The active WebSocket connection.
         token: Optional JWT token from query params for auth.
-        db: Async database session (injected by route).
     """
     session_id = str(uuid.uuid4())
 
@@ -70,17 +68,6 @@ async def handle_stream(
 
     # ── Accept WebSocket ─────────────────────────────────────────────────────
     await connection_manager.connect(session_id, websocket)
-
-    # ── Create Session in DB ─────────────────────────────────────────────────
-    db_session = None
-    if db and current_user_id:
-        try:
-            db_session = await session_service.create_session(db, user_id=current_user_id)
-            await db.flush()
-            logger.info(f"[WS] Session {db_session.id} created for user {current_user_id}")
-        except Exception as exc:
-            logger.warning(f"[WS] Failed to create DB session: {exc}")
-            db_session = None
 
     # ── Frame Processing Loop ────────────────────────────────────────────────
     try:
@@ -118,20 +105,6 @@ async def handle_stream(
 
             processing_ms = round((time.perf_counter() - t0) * 1000, 1)
 
-            # Persist to DB if authenticated
-            if db_session and db and faces:
-                try:
-                    ts = datetime.now(timezone.utc)
-                    if payload.get("timestamp"):
-                        try:
-                            ts = datetime.fromisoformat(payload["timestamp"])
-                        except ValueError:
-                            pass
-                    await session_service.add_records(db, db_session.id, faces, timestamp=ts)
-                    await db.flush()
-                except Exception as exc:
-                    logger.debug(f"[WS] DB write skipped: {exc}")
-
             # Build and send response
             response = {
                 "faces": [
@@ -159,17 +132,5 @@ async def handle_stream(
     except Exception as exc:
         logger.exception(f"[WS] Unexpected stream error: {exc}")
     finally:
-        # ── Close Session ────────────────────────────────────────────────────
-        if db_session and db:
-            try:
-                await session_service.close_session(db, db_session)
-                await db.commit()
-                logger.info(f"[WS] Session {db_session.id} closed and committed")
-            except Exception as exc:
-                logger.warning(f"[WS] Failed to close session: {exc}")
-                try:
-                    await db.rollback()
-                except Exception:
-                    pass
-
         connection_manager.disconnect(session_id)
+

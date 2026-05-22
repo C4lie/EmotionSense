@@ -10,10 +10,10 @@ Covers:
 """
 
 import uuid
-from datetime import datetime
+from datetime import datetime, timezone
 from typing import Dict, List, Optional
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, field_serializer
 
 
 # ─── Session Schemas ──────────────────────────────────────────────────────────
@@ -26,8 +26,30 @@ class SessionOut(BaseModel):
     average_confidence: Optional[float] = None
     started_at: datetime
     ended_at: Optional[datetime] = None
+    
+    # V2 Speaking metrics
+    session_type: str = "live"
+    confidence_score: Optional[float] = None
+    stability_score: Optional[float] = None
+    eye_contact_score: Optional[float] = None
+    speaking_energy: Optional[float] = None
+    script_text: Optional[str] = None
 
     model_config = {"from_attributes": True}
+
+    @field_serializer("started_at")
+    def serialize_started_at(self, val: datetime) -> str:
+        if val.tzinfo is None:
+            val = val.replace(tzinfo=timezone.utc)
+        return val.isoformat()
+
+    @field_serializer("ended_at")
+    def serialize_ended_at(self, val: Optional[datetime]) -> Optional[str]:
+        if val is None:
+            return None
+        if val.tzinfo is None:
+            val = val.replace(tzinfo=timezone.utc)
+        return val.isoformat()
 
 
 class EmotionRecordOut(BaseModel):
@@ -51,6 +73,13 @@ class EmotionRecordOut(BaseModel):
     disgust: float
 
     model_config = {"from_attributes": True}
+
+    @field_serializer("timestamp")
+    def serialize_timestamp(self, val: datetime) -> str:
+        if val.tzinfo is None:
+            val = val.replace(tzinfo=timezone.utc)
+        return val.isoformat()
+
 
 
 class SessionDetailOut(SessionOut):
@@ -83,6 +112,8 @@ class SessionCreate(BaseModel):
     """Schema to create a new session along with its frame records."""
 
     records: List[RecordCreate] = Field(default_factory=list)
+    session_type: str = "live"
+    script_text: Optional[str] = None
 
 
 class PaginatedSessions(BaseModel):

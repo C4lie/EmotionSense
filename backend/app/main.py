@@ -30,6 +30,9 @@ from app.routes.auth import router as auth_router
 from app.routes.detect import router as detect_router
 from app.routes.sessions import router as sessions_router
 from app.routes.analytics import router as analytics_router
+from app.routes.scripts import router as scripts_router
+from app.routes.subscription import router as subscription_router
+from app.routes.tone_analysis import router as tone_router
 
 
 # ─── Logging Configuration ────────────────────────────────────────────────────
@@ -48,7 +51,7 @@ def configure_logging() -> None:
         format=(
             "<green>{time:YYYY-MM-DD HH:mm:ss}</green> | "
             "<level>{level: <8}</level> | "
-            "<cyan>{name}</cyan>:<cyan>{line}</cyan> — "
+            "<cyan>{name}</cyan>:<cyan>{line}</cyan> - "
             "<level>{message}</level>"
         ),
         colorize=True,
@@ -96,7 +99,7 @@ async def lifespan(app: FastAPI):
         logger.warning(f"AI model warm-up failed: {exc}. Detection will still work on first request.")
 
     logger.info(
-        f"API ready → http://{settings.APP_HOST}:{settings.APP_PORT}/api/docs"
+        f"API ready -> http://{settings.APP_HOST}:{settings.APP_PORT}/api/docs"
     )
 
     yield  # Application runs here
@@ -158,6 +161,9 @@ def create_app() -> FastAPI:
     app.include_router(detect_router, prefix="/api")
     app.include_router(sessions_router, prefix="/api")
     app.include_router(analytics_router, prefix="/api")
+    app.include_router(scripts_router, prefix="/api")
+    app.include_router(subscription_router, prefix="/api")
+    app.include_router(tone_router, prefix="/api")
 
     # ── Utility Endpoints ─────────────────────────────────────────
     @app.get("/", include_in_schema=False)
@@ -205,11 +211,10 @@ def create_app() -> FastAPI:
         Token is optional — unauthenticated connections are accepted
         but results are not persisted to a user session.
         """
-        from app.core.database import AsyncSessionLocal
         from app.websocket.stream import handle_stream
 
-        async with AsyncSessionLocal() as db:
-            await handle_stream(websocket, token=token, db=db)
+        await handle_stream(websocket, token=token)
+
 
     return app
 

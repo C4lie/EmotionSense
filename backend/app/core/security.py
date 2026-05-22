@@ -195,3 +195,57 @@ async def get_current_user_optional(
         return None
 
     return user_uuid  # Return UUID; route resolves full User from its own db session
+
+
+# ── Premium Access Control ────────────────────────────────────────────────────
+
+async def require_premium(user_id: str = Depends(get_current_user_id)) -> str:
+    """
+    FastAPI dependency that marks an endpoint as premium-only.
+
+    Semantically distinct from get_current_user_id — signals intent.
+    Actual DB premium check is performed via check_premium_access() inside
+    each premium route handler.
+
+    Usage in route:
+        user_id: str = Depends(require_premium)
+        db: AsyncSession = Depends(get_db)
+        ...
+        await check_premium_access(user_id, db)
+    """
+    return user_id
+
+
+async def check_premium_access(user_id: str, db) -> None:
+    """
+    Checks if user has an active premium subscription.
+    Call this at the top of every premium route handler.
+    Raises HTTP 403 Forbidden if the user is not premium.
+
+    Args:
+        user_id: UUID string from the JWT token.
+        db:      AsyncSession injected into the route.
+    """
+    from app.models.user import User
+    from sqlalchemy import select
+    import uuid
+
+    try:
+        uid = uuid.UUID(user_id)
+    except ValueError:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Invalid user token.",
+        )
+
+    result = await db.execute(select(User).where(User.id == uid))
+    user = result.scalar_one_or_none()
+
+    if not user or not user.is_premium:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail=(
+                "This feature requires a Premium subscription. "
+                "Upgrade at /pricing."
+            ),
+        )

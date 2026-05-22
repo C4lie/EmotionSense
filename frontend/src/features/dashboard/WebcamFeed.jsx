@@ -6,7 +6,7 @@ import { Loader } from "../../components/ui/Loader";
 import { Camera, CameraOff, Wifi, WifiOff } from "lucide-react";
 import { useWebSocket } from "../../hooks/useWebSocket";
 
-export const WebcamFeed = () => {
+export const WebcamFeed = ({ sessionType = "live", scriptText = "" }) => {
   const webcamRef = useRef(null);
   const canvasRef = useRef(null);
   const loopRef = useRef(null);
@@ -103,11 +103,11 @@ export const WebcamFeed = () => {
   // Connect/disconnect WebSocket based on detection state
   useEffect(() => {
     if (isDetecting) {
-      wsConnect();
+      wsConnect({ session_type: sessionType, script_text: scriptText });
     } else {
       wsDisconnect();
     }
-  }, [isDetecting, wsConnect, wsDisconnect]);
+  }, [isDetecting, wsConnect, wsDisconnect, sessionType, scriptText]);
 
   // Main Detection Loop
   useEffect(() => {
@@ -245,44 +245,24 @@ export const WebcamFeed = () => {
 
       // Draw bounding box
       ctx.strokeStyle = boxColor;
-      ctx.lineWidth = 3;
+      ctx.lineWidth = 1.5;
       ctx.lineJoin = "round";
       ctx.strokeRect(x, y, w, h);
-
-      // Draw bounding box corner accents (futuristic feel)
-      ctx.fillStyle = boxColor;
-      const accentLen = Math.min(15, w * 0.2);
-      // Top-Left corner
-      ctx.fillRect(x - 1, y - 1, accentLen, 4);
-      ctx.fillRect(x - 1, y - 1, 4, accentLen);
-      // Top-Right corner
-      ctx.fillRect(x + w - accentLen + 1, y - 1, accentLen, 4);
-      ctx.fillRect(x + w - 3, y - 1, 4, accentLen);
-      // Bottom-Left corner
-      ctx.fillRect(x - 1, y + h - 3, accentLen, 4);
-      ctx.fillRect(x - 1, y + h - accentLen + 1, 4, accentLen);
-      // Bottom-Right corner
-      ctx.fillRect(x + w - accentLen + 1, y + h - 3, accentLen, 4);
-      ctx.fillRect(x + w - 3, y + h - accentLen + 1, 4, accentLen);
-
-      // Draw translucent background overlay inside box
-      ctx.fillStyle = "rgba(0, 0, 0, 0.15)";
-      ctx.fillRect(x, y, w, h);
 
       // Draw dominant emotion label and confidence percentage
       const labelText = `${face.dominant_emotion.toUpperCase()} (${Math.round(
         face.confidence
       )}%)`;
-      ctx.font = "bold 13px Inter, sans-serif";
+      ctx.font = "bold 11px Inter, sans-serif";
       
       // Label box padding
-      const labelWidth = ctx.measureText(labelText).width + 12;
+      const labelWidth = ctx.measureText(labelText).width + 8;
       ctx.fillStyle = boxColor;
-      ctx.fillRect(x - 1.5, y - 25, labelWidth, 25);
+      ctx.fillRect(x - 0.75, y - 20, labelWidth, 20);
 
       // Text color
       ctx.fillStyle = "#ffffff";
-      ctx.fillText(labelText, x + 5, y - 8);
+      ctx.fillText(labelText, x + 4, y - 6);
     });
   }, [faces]);
 
@@ -316,7 +296,7 @@ export const WebcamFeed = () => {
 
   if (hasPermission === false) {
     return (
-      <div className="flex flex-col items-center justify-center h-[360px] bg-secondary/20 rounded-xl border border-dashed border-white/10 p-6 text-center">
+      <div className="flex flex-col items-center justify-center h-[360px] bg-zinc-955 rounded-xl border border-dashed border-zinc-800 p-6 text-center">
         <CameraOff className="h-12 w-12 text-destructive mb-3" />
         <h4 className="text-lg font-medium text-destructive">Camera Access Denied</h4>
         <p className="text-sm text-muted-foreground max-w-sm mt-1">
@@ -327,7 +307,7 @@ export const WebcamFeed = () => {
   }
 
   return (
-    <div className="relative aspect-video rounded-xl overflow-hidden border border-white/10 bg-black/60 shadow-2xl">
+    <div className="relative aspect-video rounded-xl overflow-hidden border border-zinc-800 bg-zinc-950 shadow-sm">
       {hasPermission === null ? (
         <div className="absolute inset-0 flex items-center justify-center">
           <Loader text="Initializing camera..." size="lg" />
@@ -345,7 +325,7 @@ export const WebcamFeed = () => {
           />
           {/* Connection status badge */}
           {isDetecting && (
-            <div className="absolute top-4 right-4 z-30 flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-semibold border backdrop-blur-md bg-black/60 shadow-md">
+            <div className="absolute top-4 right-4 z-30 flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-semibold border border-zinc-805 bg-zinc-900 shadow-sm">
               {isWsConnected ? (
                 <>
                   <Wifi className="h-3.5 w-3.5 text-emerald-400" />
@@ -366,8 +346,8 @@ export const WebcamFeed = () => {
           />
 
           {!isDetecting && (
-            <div className="absolute inset-0 bg-black/70 backdrop-blur-sm flex flex-col items-center justify-center z-10">
-              <Camera className="h-12 w-12 text-muted-foreground mb-3 animate-pulse" />
+            <div className="absolute inset-0 bg-zinc-950/80 flex flex-col items-center justify-center z-10">
+              <Camera className="h-12 w-12 text-muted-foreground mb-3" />
               <p className="text-sm font-medium text-foreground">
                 Inference Idle
               </p>

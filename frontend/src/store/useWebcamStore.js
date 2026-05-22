@@ -40,9 +40,15 @@ export const useWebcamStore = create((set) => ({
   // Countdown & Batch setters
   setCountdown: (countdown) => set({ countdown }),
   setIsCountdownRunning: (isCountdownRunning) => set({ isCountdownRunning }),
-  addCapturedRecord: (record) => set((state) => ({ 
-    capturedRecords: [...state.capturedRecords, record] 
-  })),
+  onRecordCaptured: null,
+  addCapturedRecord: (record) => set((state) => {
+    if (state.onRecordCaptured) {
+      state.onRecordCaptured(record);
+    }
+    return { 
+      capturedRecords: [...state.capturedRecords, record] 
+    };
+  }),
   clearCapturedRecords: () => set({ capturedRecords: [] }),
   setSessionResult: (sessionResult) => set({ sessionResult }),
   setShowResultPopup: (showResultPopup) => set({ showResultPopup }),

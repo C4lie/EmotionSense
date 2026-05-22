@@ -41,7 +41,7 @@ class RequestLoggingMiddleware(BaseHTTPMiddleware):
 
         logger.log(
             log_level,
-            "{method} {url} → {status} ({time:.1f}ms) [{client}]",
+            "{method} {url} -> {status} ({time:.1f}ms) [{client}]",
             method=request.method,
             url=str(request.url.path),
             status=response.status_code,

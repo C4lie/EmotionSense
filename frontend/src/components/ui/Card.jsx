@@ -6,14 +6,12 @@ export const Card = React.forwardRef(({ className, children, glow = false, ...pr
     <div
       ref={ref}
       className={cn(
-        "rounded-xl border border-white/10 bg-card/40 backdrop-blur-xl text-card-foreground shadow-lg overflow-hidden transition-all duration-300",
-        glow && "hover:shadow-[0_0_30px_rgba(59,130,246,0.15)] hover:border-white/20",
+        "rounded-xl border border-white/[0.06] bg-zinc-950/45 backdrop-blur-xl text-card-foreground shadow-xl overflow-hidden transition-all duration-500",
+        glow && "hover:border-purple-500/35 hover:shadow-[0_0_30px_rgba(168,85,247,0.2)]",
         className
       )}
       {...props}
     >
-      {/* Subtle top glare effect */}
-      <div className="absolute top-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-white/20 to-transparent"></div>
       {children}
     </div>
   );

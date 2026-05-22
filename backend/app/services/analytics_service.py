@@ -22,7 +22,8 @@ class AnalyticsService:
         session_stmt = select(EmotionSession).where(
             and_(
                 EmotionSession.user_id == user_id,
-                EmotionSession.started_at >= cutoff_date
+                EmotionSession.started_at >= cutoff_date,
+                EmotionSession.dominant_emotion.isnot(None)
             )
         )
         sessions_res = await db.execute(session_stmt)
@@ -115,7 +116,8 @@ class AnalyticsService:
         ).where(
             and_(
                 EmotionSession.user_id == user_id,
-                EmotionSession.started_at >= cutoff_date
+                EmotionSession.started_at >= cutoff_date,
+                EmotionSession.dominant_emotion.isnot(None)
             )
         ).group_by(
             func.date(EmotionSession.started_at),

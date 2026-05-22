@@ -81,7 +81,38 @@ async def init_db() -> None:
     For production, replace with Alembic migration: `alembic upgrade head`.
     """
     # Import models here to ensure they're registered on Base.metadata
-    from app.models import user, session, record  # noqa: F401
+    from app.models import user, session, record, subscription, tone_report  # noqa: F401
+    from sqlalchemy import text
 
     async with engine.begin() as conn:
         await conn.run_sync(Base.metadata.create_all)
+
+        # Dynamic migration for SQLite to support V2 speaking trainer columns
+        if settings.DATABASE_URL.startswith("sqlite"):
+            result = await conn.execute(text("PRAGMA table_info(emotion_sessions)"))
+            cols = [row[1] for row in result.fetchall()]
+            
+            new_cols = {
+                "session_type": "VARCHAR(50) DEFAULT 'live'",
+                "confidence_score": "FLOAT",
+                "stability_score": "FLOAT",
+                "eye_contact_score": "FLOAT",
+                "speaking_energy": "FLOAT",
+                "script_text": "TEXT"
+            }
+            for col, col_type in new_cols.items():
+                if col not in cols:
+                    await conn.execute(text(f"ALTER TABLE emotion_sessions ADD COLUMN {col} {col_type}"))
+
+        # Dynamic migration for user premium columns
+        if settings.DATABASE_URL.startswith("sqlite"):
+            result_users = await conn.execute(text("PRAGMA table_info(users)"))
+            user_cols = [row[1] for row in result_users.fetchall()]
+            premium_cols = {
+                "is_premium": "BOOLEAN DEFAULT 0",
+                "premium_activated_at": "TIMESTAMP",
+                "premium_expires_at": "TIMESTAMP",
+            }
+            for col, col_type in premium_cols.items():
+                if col not in user_cols:
+                    await conn.execute(text(f"ALTER TABLE users ADD COLUMN {col} {col_type}"))
