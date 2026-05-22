@@ -22,10 +22,12 @@ import {
   Volume2,
   RefreshCw,
   History,
-  Trash2
+  Trash2,
+  HelpCircle
 } from "lucide-react";
 import { analyticsService } from "../../services/analyticsService";
 import { Loader } from "../../components/ui/Loader";
+import { WelcomeTour } from "./WelcomeTour";
 
 // Themes for styling based on dominant emotion
 const EMOTION_THEMES = {
@@ -96,6 +98,7 @@ export const Dashboard = () => {
   const [isSkeletonLoading, setIsSkeletonLoading] = useState(true);
   const [historySessions, setHistorySessions] = useState([]);
   const [isLoadingHistory, setIsLoadingHistory] = useState(false);
+  const [showWelcomeTour, setShowWelcomeTour] = useState(false);
 
   const loadHistory = async () => {
     setIsLoadingHistory(true);
@@ -166,7 +169,15 @@ export const Dashboard = () => {
             Capture facial feeds in real-time and review predictive neural network breakdowns.
           </p>
         </div>
-        <div className="flex items-center">
+        <div className="flex items-center gap-2.5">
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => setShowWelcomeTour(true)}
+            className="gap-2 border-primary/20 bg-primary/5 hover:bg-primary/15 text-primary hover:text-white transition-all shadow-[0_0_15px_rgba(168,85,247,0.15)]"
+          >
+            <HelpCircle className="h-4 w-4" /> Quick Tour Guide
+          </Button>
           <Button
             variant="outline"
             size="sm"
@@ -544,6 +555,9 @@ export const Dashboard = () => {
           </div>
         </div>
       )}
+
+      {/* Interactive Onboarding Welcome Tour */}
+      <WelcomeTour forceOpen={showWelcomeTour} onClose={() => setShowWelcomeTour(false)} />
     </div>
   );
 };
