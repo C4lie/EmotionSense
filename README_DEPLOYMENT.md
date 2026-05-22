@@ -48,7 +48,7 @@ The FastAPI backend is deployed using its containerized Docker setup.
 | `DATABASE_URL` | *Your Supabase Transaction Connection String (e.g. `postgresql://...:6543/postgres?sslmode=require`)* |
 | `JWT_SECRET_KEY` | *A secure random string (e.g., generate using `openssl rand -hex 32`)* |
 | `JWT_ALGORITHM` | `HS256` |
-| `BACKEND_CORS_ORIGINS` | *JSON list of allowed origins, e.g.:* `["https://emotionsense.vercel.app","https://emotionsense.ai"]` |
+| `BACKEND_CORS_ORIGINS` | *JSON list of allowed origins, e.g.:* `["https://expression-sense.vercel.app","https://emotionsense.ai"]` |
 | `PORT` | *Render will assign this dynamically, but you can set it to `8000` (FastAPI Docker will map to this port)* |
 
 6. Render will build the container from the `Dockerfile` and start it on the dynamic port. It will perform health checking automatically at `/health` to confirm the service is live.
