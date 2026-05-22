@@ -5,11 +5,14 @@ services:
     dockerfilePath: backend/Dockerfile
     dockerContext: backend
     plan: free # Can be updated to starter or higher depending on resources
+    healthCheckPath: /health
     envVars:
       - key: APP_ENV
         value: production
       - key: APP_DEBUG
         value: "false"
+      - key: WEB_CONCURRENCY
+        value: "1"
       - key: DATABASE_URL
         sync: false # User will input their Supabase connection string
       - key: JWT_SECRET_KEY

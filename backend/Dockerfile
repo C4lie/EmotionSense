@@ -42,10 +42,6 @@ USER appuser
 # ─── Exposed Port ─────────────────────────────────────────────────────────────
 EXPOSE 8000
 
-# ─── Health Check ─────────────────────────────────────────────────────────────
-HEALTHCHECK --interval=30s --timeout=10s --start-period=60s --retries=3 \
-    CMD curl -f http://localhost:8000/health || exit 1
-
 # ─── Startup Command ──────────────────────────────────────────────────────────
-# Use multiple workers in production via environment variable
-CMD ["sh", "-c", "uvicorn app.main:app --host 0.0.0.0 --port ${PORT:-8000} --workers 2"]
+# Use Web Concurrency to configure workers (default 1 for low memory environments)
+CMD ["sh", "-c", "uvicorn app.main:app --host 0.0.0.0 --port ${PORT:-8000} --workers ${WEB_CONCURRENCY:-1}"]
