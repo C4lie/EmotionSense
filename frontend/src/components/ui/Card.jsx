@@ -1,14 +1,49 @@
 import React from "react";
 import { cn } from "../../utils/cn";
 
-export const Card = React.forwardRef(({ className, children, glow = false, ...props }, ref) => {
+/**
+ * V3 Card Component System
+ * 
+ * Composable card with glass variants, glow effects, and animated hover states.
+ * 
+ * @param {string} variant - "default" | "glass" | "elevated" | "outline"
+ * @param {boolean} glow - Enable accent glow on hover
+ * @param {boolean} interactive - Enable hover lift/scale effect
+ * @param {string} padding - "none" | "sm" | "md" | "lg"
+ */
+export const Card = React.forwardRef(({
+  className,
+  children,
+  variant = "default",
+  glow = false,
+  interactive = false,
+  padding = "md",
+  ...props
+}, ref) => {
+  const variants = {
+    default: "bg-card border border-border shadow-elevated",
+    glass: "glass-card",
+    elevated: "bg-surface-elevated border border-border shadow-elevated-lg",
+    outline: "bg-transparent border border-border",
+  };
+
+  const paddings = {
+    none: "",
+    sm: "p-4",
+    md: "p-6",
+    lg: "p-8",
+  };
+
   return (
     <div
       ref={ref}
       className={cn(
-        "rounded-xl border border-white/[0.06] bg-zinc-950/45 backdrop-blur-xl text-card-foreground shadow-xl overflow-hidden transition-all duration-500",
-        glow && "hover:border-purple-500/35 hover:shadow-[0_0_30px_rgba(168,85,247,0.2)]",
-        className
+        "rounded-xl overflow-hidden transition-all duration-400 ease-out-expo",
+        variants[variant],
+        paddings[padding],
+        glow && "glow-hover",
+        interactive && "hover:-translate-y-0.5 cursor-pointer",
+        className,
       )}
       {...props}
     >
@@ -23,13 +58,13 @@ export const CardHeader = React.forwardRef(({ className, ...props }, ref) => (
 ));
 CardHeader.displayName = "CardHeader";
 
-export const CardTitle = React.forwardRef(({ className, ...props }, ref) => (
-  <h3 ref={ref} className={cn("text-xl font-semibold leading-none tracking-tight", className)} {...props} />
+export const CardTitle = React.forwardRef(({ className, as: Tag = "h3", ...props }, ref) => (
+  <Tag ref={ref} className={cn("text-lg font-semibold leading-tight tracking-tight", className)} {...props} />
 ));
 CardTitle.displayName = "CardTitle";
 
 export const CardDescription = React.forwardRef(({ className, ...props }, ref) => (
-  <p ref={ref} className={cn("text-sm text-muted-foreground", className)} {...props} />
+  <p ref={ref} className={cn("text-sm text-muted-foreground leading-relaxed", className)} {...props} />
 ));
 CardDescription.displayName = "CardDescription";
 

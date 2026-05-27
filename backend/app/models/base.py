@@ -33,12 +33,19 @@ class UUIDMixin:
 
 class TimestampMixin:
     """
-    Adds `created_at` with server-generated timestamp.
+    Adds `created_at` and `updated_at` with server-generated timestamps.
     All timestamps are stored in UTC with timezone info.
+    `updated_at` auto-updates on every record modification.
     """
 
     created_at: Mapped[DateTime] = mapped_column(
         DateTime(timezone=True),
         server_default=func.now(),
+        nullable=False,
+    )
+    updated_at: Mapped[DateTime] = mapped_column(
+        DateTime(timezone=True),
+        server_default=func.now(),
+        onupdate=func.now(),
         nullable=False,
     )

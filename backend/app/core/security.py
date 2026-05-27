@@ -125,10 +125,19 @@ async def get_current_user_id(
 
 # ─── Full User Object Dependencies ───────────────────────────────────────────
 # These fetch the full User ORM object from the DB, not just the user_id.
-# Import here (not at top) to avoid circular imports: security → database → models → security
+# Lazy import wrapper avoids circular imports: security → database → models → security
+
+
+async def _get_db():
+    """Lazy wrapper around database.get_db to break circular import chain."""
+    from app.core.database import get_db
+
+    async for session in get_db():
+        yield session
 
 async def get_current_user(
     user_id: str = Depends(get_current_user_id),
+    db: "AsyncSession" = Depends(_get_db),
 ):
     """
     FastAPI dependency that returns the full authenticated User object.
@@ -138,23 +147,33 @@ async def get_current_user(
 
     Usage:
         @router.get("/me")
-        async def me(user: User = Depends(get_current_user)):
+        async def me(user = Depends(get_current_user)):
             ...
     """
-    # Import inside function to avoid circular imports
-    from app.core.database import get_db
     from app.models.user import User
     from sqlalchemy import select
     import uuid
 
-    # We need the DB session — use a direct engine call here since we
-    # can't inject get_db as a dependency of another dependency cleanly.
-    # Routes that need get_current_user should inject db separately.
-    # This dependency is therefore used only where db is also injected.
-    raise HTTPException(
-        status_code=status.HTTP_501_NOT_IMPLEMENTED,
-        detail="Use get_current_user_from_db instead — inject db separately.",
-    )
+    try:
+        uid = uuid.UUID(user_id)
+    except ValueError:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Invalid user token.",
+            headers={"WWW-Authenticate": "Bearer"},
+        )
+
+    result = await db.execute(select(User).where(User.id == uid))
+    user = result.scalar_one_or_none()
+
+    if not user:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="User not found.",
+            headers={"WWW-Authenticate": "Bearer"},
+        )
+
+    return user
 
 
 async def get_current_user_optional(

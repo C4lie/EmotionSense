@@ -14,7 +14,7 @@ import uuid
 from statistics import mean
 from typing import Any, Dict, List, Optional
 
-from sqlalchemy import select
+from sqlalchemy import func as sa_func, select
 from sqlalchemy.ext.asyncio import AsyncSession
 from loguru import logger
 
@@ -266,10 +266,9 @@ class ToneService:
             return {"total": 0, "page": page, "size": size, "reports": []}
 
         count_result = await db.execute(
-            select(ToneReport).where(ToneReport.user_id == uid)
+            select(sa_func.count()).select_from(ToneReport).where(ToneReport.user_id == uid)
         )
-        all_reports = count_result.scalars().all()
-        total = len(all_reports)
+        total = count_result.scalar_one()
 
         offset = (page - 1) * size
         result = await db.execute(

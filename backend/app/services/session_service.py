@@ -159,6 +159,14 @@ class SessionService:
                 session.eye_contact_score = metrics["eye_contact_score"]
                 session.speaking_energy = metrics["speaking_energy"]
 
+                # Verify and update daily challenge status
+                if session.user_id:
+                    try:
+                        from app.services.challenge_service import challenge_service
+                        await challenge_service.verify_challenge_completion(db, str(session.user_id), session)
+                    except Exception as challenge_exc:
+                        logger.warning(f"Failed to verify challenge completion: {challenge_exc}")
+
         await db.flush()
 
         logger.info(

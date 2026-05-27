@@ -10,5 +10,7 @@ from app.models.session import EmotionSession
 from app.models.record import EmotionRecord
 from app.models.subscription import Subscription
 from app.models.tone_report import ToneReport
+from app.models.challenge import Challenge
+from app.models.streak import Streak
 
-__all__ = ["User", "EmotionSession", "EmotionRecord", "Subscription", "ToneReport"]
+__all__ = ["User", "EmotionSession", "EmotionRecord", "Subscription", "ToneReport", "Challenge", "Streak"]
