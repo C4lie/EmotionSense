@@ -37,6 +37,10 @@ export const WebcamFeed = ({ sessionType = "live", scriptText = "" }) => {
 
   // Detect camera devices & check permissions
   useEffect(() => {
+    if (!navigator.mediaDevices || !navigator.mediaDevices.enumerateDevices) {
+      setHasPermission(false);
+      return;
+    }
     navigator.mediaDevices
       .enumerateDevices()
       .then((deviceInfos) => {
@@ -295,12 +299,17 @@ export const WebcamFeed = ({ sessionType = "live", scriptText = "" }) => {
   };
 
   if (hasPermission === false) {
+    const isInsecureContext = !window.isSecureContext;
     return (
-      <div className="flex flex-col items-center justify-center h-[360px] bg-zinc-955 rounded-xl border border-dashed border-zinc-800 p-6 text-center">
+      <div className="flex flex-col items-center justify-center h-[360px] bg-zinc-950 rounded-xl border border-dashed border-zinc-800 p-6 text-center">
         <CameraOff className="h-12 w-12 text-destructive mb-3" />
-        <h4 className="text-lg font-medium text-destructive">Camera Access Denied</h4>
+        <h4 className="text-lg font-medium text-destructive">
+          {isInsecureContext ? "Insecure Context Blocked" : "Camera Access Denied"}
+        </h4>
         <p className="text-sm text-muted-foreground max-w-sm mt-1">
-          Please check your browser settings and grant camera access permissions to begin detection.
+          {isInsecureContext 
+            ? "Your browser blocks camera access over insecure HTTP connections. Please access via localhost or an HTTPS URL." 
+            : "Please check your browser settings and grant camera access permissions to begin detection."}
         </p>
       </div>
     );

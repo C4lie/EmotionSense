@@ -47,6 +47,10 @@ export const ControlPanel = () => {
 
   // Enumerate video devices
   useEffect(() => {
+    if (!navigator.mediaDevices || !navigator.mediaDevices.enumerateDevices) {
+      console.warn("[ControlPanel] Media devices are not supported or available (requires HTTPS or localhost).");
+      return;
+    }
     navigator.mediaDevices.enumerateDevices().then((deviceInfos) => {
       const videoDevices = deviceInfos.filter((d) => d.kind === "videoinput");
       setDevices(videoDevices);
