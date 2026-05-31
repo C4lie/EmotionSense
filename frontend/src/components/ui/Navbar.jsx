@@ -12,6 +12,7 @@ import {
   User,
   X,
   Sparkles,
+  Video,
 } from "lucide-react";
 import { useAuthStore } from "../../store/useAuthStore";
 import { useSubscriptionStore } from "../../store/useSubscriptionStore";
@@ -89,6 +90,10 @@ export const Navbar = () => {
               <NavLink to="/speaking-trainer" className={navLinkClass}>
                 <BrainCircuit className="h-4 w-4" />
                 Confidence Builder
+              </NavLink>
+              <NavLink to="/interview-coach" className={navLinkClass}>
+                <Video className="h-4 w-4" />
+                Interview Coach
               </NavLink>
               <NavLink to="/analytics" className={navLinkClass}>
                 <BarChart3 className="h-4 w-4" />
@@ -175,6 +180,7 @@ export const Navbar = () => {
                 {isAuthenticated && (
                   <>
                     <MobileNavLink to="/speaking-trainer" icon={BrainCircuit} label="Confidence Builder" onClick={closeMobile} />
+                    <MobileNavLink to="/interview-coach" icon={Video} label="Interview Coach" onClick={closeMobile} />
                     <MobileNavLink to="/analytics" icon={BarChart3} label="Analytics" onClick={closeMobile} />
                     {isPremium ? (
                       <MobileNavLink to="/tone-coach" icon={Mic} label="Tone Coach" onClick={closeMobile} premium />

@@ -91,12 +91,12 @@ class SessionDetailOut(SessionOut):
 class RecordCreate(BaseModel):
     """Schema to capture a single face detection record for session creation."""
 
-    timestamp: datetime
+    timestamp: Optional[datetime] = None
     face_index: int = Field(default=0, ge=0)
-    box_x: int
-    box_y: int
-    box_w: int
-    box_h: int
+    box_x: int = Field(default=0)
+    box_y: int = Field(default=0)
+    box_w: int = Field(default=0)
+    box_h: int = Field(default=0)
     dominant_emotion: str = Field(..., description="Dominant emotion detected")
     confidence: float = Field(..., ge=0.0, le=100.0)
     happy: float = Field(0.0, ge=0.0, le=100.0)
@@ -106,6 +106,35 @@ class RecordCreate(BaseModel):
     fear: float = Field(0.0, ge=0.0, le=100.0)
     surprise: float = Field(0.0, ge=0.0, le=100.0)
     disgust: float = Field(0.0, ge=0.0, le=100.0)
+
+    from pydantic import model_validator
+
+    @model_validator(mode="before")
+    @classmethod
+    def populate_flat_emotions(cls, data):
+        if isinstance(data, dict):
+            # Parse emotion_scores dict if passed
+            scores = data.get("emotion_scores")
+            if isinstance(scores, dict):
+                for k, v in scores.items():
+                    if k in ["happy", "sad", "angry", "neutral", "fear", "surprise", "disgust"]:
+                        data[k] = v
+            # Default timestamp to current time if missing
+            if "timestamp" not in data:
+                from datetime import datetime, timezone
+                data["timestamp"] = datetime.now(timezone.utc)
+        return data
+
+
+class SessionStartIn(BaseModel):
+    """Schema to start a new dynamic session."""
+
+    session_type: str = Field(default="live", alias="mode")
+    script_text: Optional[str] = None
+
+    model_config = {
+        "populate_by_name": True
+    }
 
 
 class SessionCreate(BaseModel):

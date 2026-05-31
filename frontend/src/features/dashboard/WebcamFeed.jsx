@@ -5,6 +5,7 @@ import { detectService } from "../../services/detectService";
 import { Loader } from "../../components/ui/Loader";
 import { Camera, CameraOff, Wifi, WifiOff } from "lucide-react";
 import { useWebSocket } from "../../hooks/useWebSocket";
+import { useMediaPipe } from "../../hooks/useMediaPipe";
 
 export const WebcamFeed = ({ sessionType = "live", scriptText = "" }) => {
   const webcamRef = useRef(null);
@@ -31,6 +32,12 @@ export const WebcamFeed = ({ sessionType = "live", scriptText = "" }) => {
     disconnect: wsDisconnect,
     sendFrame: wsSendFrame,
   } = useWebSocket();
+
+  const {
+    isLoaded: isMpLoaded,
+    telemetry: mpTelemetry,
+    analyzeFrame: mpAnalyzeFrame,
+  } = useMediaPipe();
 
   const [hasPermission, setHasPermission] = useState(null);
   const [devices, setDevices] = useState([]);
@@ -138,6 +145,10 @@ export const WebcamFeed = ({ sessionType = "live", scriptText = "" }) => {
 
       isProcessingRef.current = true;
       const tStart = performance.now();
+
+      if (webcamRef.current && webcamRef.current.video) {
+        mpAnalyzeFrame(webcamRef.current.video);
+      }
 
       try {
         if (isWsConnected) {
@@ -268,7 +279,38 @@ export const WebcamFeed = ({ sessionType = "live", scriptText = "" }) => {
       ctx.fillStyle = "#ffffff";
       ctx.fillText(labelText, x + 4, y - 6);
     });
-  }, [faces]);
+
+    // Render MediaPipe guides if loaded
+    if (isMpLoaded && isDetecting) {
+      // Draw Gaze Target Indicator
+      const gazeText = `GAZE LOCK: ${mpTelemetry.eyeContact}%`;
+      const isLocked = mpTelemetry.eyeContact >= 70;
+      ctx.fillStyle = isLocked ? "#10b981" : "#ef4444";
+      ctx.font = "bold 9px Inter, sans-serif";
+      ctx.fillRect(10, 10, ctx.measureText(gazeText).width + 12, 18);
+      ctx.fillStyle = "#ffffff";
+      ctx.fillText(gazeText, 16, 22);
+
+      // Draw Posture Guide Indicator
+      const postureText = `POSTURE: ${mpTelemetry.postureScore}%`;
+      ctx.fillStyle = mpTelemetry.postureScore >= 70 ? "#10b981" : "#f59e0b";
+      ctx.fillRect(10, 32, ctx.measureText(postureText).width + 12, 18);
+      ctx.fillStyle = "#ffffff";
+      ctx.fillText(postureText, 16, 44);
+
+      // Draw level shoulder margins line (visual posture coach aids)
+      ctx.strokeStyle = "rgba(99, 102, 241, 0.25)";
+      ctx.lineWidth = 1;
+      ctx.setLineDash([4, 4]);
+      
+      // Draw line at 80% height of the canvas (expected shoulders region)
+      ctx.beginPath();
+      ctx.moveTo(0, canvas.height * 0.8);
+      ctx.lineTo(canvas.width, canvas.height * 0.8);
+      ctx.stroke();
+      ctx.setLineDash([]); // Reset
+    }
+  }, [faces, isMpLoaded, isDetecting, mpTelemetry]);
 
   // Request Animation Frame loop to sync canvas dimensions when window resizes
   useEffect(() => {

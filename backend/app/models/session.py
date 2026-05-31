@@ -22,6 +22,8 @@ from app.models.base import TimestampMixin, UUIDMixin
 if TYPE_CHECKING:
     from app.models.user import User
     from app.models.record import EmotionRecord
+    from app.models.analytics import Analytics
+    from app.models.recommendation import Recommendation
 
 
 class EmotionSession(UUIDMixin, TimestampMixin, Base):
@@ -81,6 +83,19 @@ class EmotionSession(UUIDMixin, TimestampMixin, Base):
         cascade="all, delete-orphan",
         order_by="EmotionRecord.timestamp",
         lazy="select",
+    )
+
+    analytics_report: Mapped[Optional["Analytics"]] = relationship(
+        "Analytics",
+        back_populates="session",
+        cascade="all, delete-orphan",
+        uselist=False,
+    )
+
+    recommendation_list: Mapped[List["Recommendation"]] = relationship(
+        "Recommendation",
+        back_populates="session",
+        cascade="all, delete-orphan",
     )
 
     def __repr__(self) -> str:

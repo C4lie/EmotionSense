@@ -113,17 +113,19 @@ class SessionService:
         self,
         db: AsyncSession,
         session: EmotionSession,
+        audio_metrics: Optional[dict] = None,
     ) -> EmotionSession:
         """
         Finalise a session by aggregating summary statistics.
 
         Computes dominant_emotion and average_confidence from all records
         in this session and writes ended_at timestamp. Also calculates
-        speaking trainer scores if applicable.
+        speaking trainer and interview coach scores if applicable.
 
         Args:
             db: Active async database session.
             session: The EmotionSession to close.
+            audio_metrics: Optional dict containing browser vocal metrics.
 
         Returns:
             The updated EmotionSession instance.
@@ -149,11 +151,43 @@ class SessionService:
             session.dominant_emotion = dominant
             session.average_confidence = round(avg_conf, 2)
 
-            # Compute V2 telemetry metrics if speaking session
-            if session.session_type == "speaking":
-                duration_seconds = max(1.0, (session.ended_at - session.started_at).total_seconds())
+            # Compute V2/V3 telemetry metrics if speaking or interview session
+            if session.session_type in ("speaking", "interview"):
+                ended_at = session.ended_at
+                started_at = session.started_at
+                if ended_at.tzinfo is not None:
+                    ended_at = ended_at.replace(tzinfo=None)
+                if started_at.tzinfo is not None:
+                    started_at = started_at.replace(tzinfo=None)
+                duration_seconds = max(1.0, (ended_at - started_at).total_seconds())
                 from app.services.confidence_service import confidence_service
                 metrics = confidence_service.calculate_metrics(records, duration_seconds)
+                
+                # Blend audio voice metrics if provided for multimodal scoring
+                if audio_metrics:
+                    voice_energy = audio_metrics.get("energy_mean", 50.0)
+                    voice_pace = audio_metrics.get("pace_score", 50.0)
+                    voice_hesitation = audio_metrics.get("hesitation_rate", 0.2)
+                    voice_expressive = audio_metrics.get("expressiveness", 50.0)
+                    
+                    # Blend face-derived confidence with voice indicators
+                    vocal_confidence = 100.0 - (voice_hesitation * 150.0)
+                    vocal_confidence = max(10.0, min(100.0, vocal_confidence))
+                    metrics["confidence_score"] = round(
+                        metrics["confidence_score"] * 0.5 + vocal_confidence * 0.5, 1
+                    )
+                    
+                    # stability score blends transitions and vocal energy standard deviation
+                    voice_consistency = max(10.0, min(100.0, 100.0 - audio_metrics.get("energy_std", 10.0) * 3.0))
+                    metrics["stability_score"] = round(
+                        metrics["stability_score"] * 0.5 + voice_consistency * 0.5, 1
+                    )
+                    
+                    # speaking energy is a blend of visual box variance and vocal energy
+                    metrics["speaking_energy"] = round(
+                        metrics["speaking_energy"] * 0.4 + voice_energy * 0.6, 1
+                    )
+                
                 session.confidence_score = metrics["confidence_score"]
                 session.stability_score = metrics["stability_score"]
                 session.eye_contact_score = metrics["eye_contact_score"]

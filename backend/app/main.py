@@ -35,6 +35,8 @@ from app.routes.subscription import router as subscription_router
 from app.routes.tone_analysis import router as tone_router
 from app.routes.challenges import router as challenges_router
 from app.routes.streaks import router as streaks_router
+from app.routes.interviews import router as interviews_router
+from app.routes.recommendations import router as recommendations_router
 
 
 # ─── Logging Configuration ────────────────────────────────────────────────────
@@ -168,6 +170,8 @@ def create_app() -> FastAPI:
     app.include_router(tone_router, prefix="/api")
     app.include_router(challenges_router, prefix="/api")
     app.include_router(streaks_router, prefix="/api")
+    app.include_router(interviews_router, prefix="/api")
+    app.include_router(recommendations_router, prefix="/api")
 
     # ── Utility Endpoints ─────────────────────────────────────────
     @app.get("/", include_in_schema=False)

@@ -86,7 +86,7 @@ async def init_db() -> None:
     For production, replace with Alembic migration: `alembic upgrade head`.
     """
     # Import models here to ensure they're registered on Base.metadata
-    from app.models import user, session, record, subscription, tone_report  # noqa: F401
+    from app.models import user, session, record, subscription, tone_report, analytics, recommendation  # noqa: F401
     from sqlalchemy import text
 
     async with engine.begin() as conn:

@@ -12,5 +12,7 @@ from app.models.subscription import Subscription
 from app.models.tone_report import ToneReport
 from app.models.challenge import Challenge
 from app.models.streak import Streak
+from app.models.analytics import Analytics
+from app.models.recommendation import Recommendation
 
-__all__ = ["User", "EmotionSession", "EmotionRecord", "Subscription", "ToneReport", "Challenge", "Streak"]
+__all__ = ["User", "EmotionSession", "EmotionRecord", "Subscription", "ToneReport", "Challenge", "Streak", "Analytics", "Recommendation"]
